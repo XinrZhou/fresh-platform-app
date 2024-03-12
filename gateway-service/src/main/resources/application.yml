@@ -1,0 +1,45 @@
+server:
+  port: 8080
+spring:
+  application:
+    name: gateway-service
+  cloud:
+    nacos:
+      discovery:
+        server-addr: 124.223.175.150:8848
+    gateway:
+      discovery:
+        locator:
+          enabled: true
+          lower-case-service-id: true
+      routes:
+        - id: user-service
+          uri: lb://user-service
+          predicates:
+            - Path=/users/**, /rdc/**, /supplier/**, /image/**
+        - id: product-service
+          uri: lb://product-service
+          predicates:
+            - Path=/category/**, /attribute/**, /brand/**, /spu/**, /sku/**, /rdc_spu/**
+  data:
+    redis:
+      host: 124.223.175.150
+      port: 6379
+      connect-timeout: 2000
+      password: 1157
+
+logging:
+  level:
+    root: info
+    com:
+      example: debug
+    org:
+      springframework:
+        r2dbc: debug
+        cloud:
+          gateway: debug
+  pattern:
+    console: '%-5level %C.%M[%line] - %msg%n'
+
+my:
+  secretKey: dldkshfpojoi42zxr
