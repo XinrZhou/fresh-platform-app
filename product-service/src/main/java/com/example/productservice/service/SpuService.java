@@ -1,5 +1,6 @@
 package com.example.productservice.service;
 
+import com.alibaba.fastjson.JSON;
 import com.example.productservice.dto.SpuDTO;
 import com.example.productservice.po.Brand;
 import com.example.productservice.po.Category;
@@ -35,8 +36,10 @@ public class SpuService {
                                 .id(spu.getId())
                                 .name(spu.getName())
                                 .imageUrl(spu.getImageUrl())
-                                .originPrice(sku.getOriginPrice())
-                                .discountPrice(sku.getDiscountPrice())
+                                .tags(spu.getTags())
+                                .specialSpec(spu.getSpecialSpec())
+                                .genericSpec(spu.getGenericSpec())
+                                .defaultSku(JSON.toJSONString(sku))
                                 .build()))
                 .collectList();
     }
@@ -49,9 +52,11 @@ public class SpuService {
                                 .name(spu.getName())
                                 .imageUrl(spu.getImageUrl())
                                 .detailImageUrl(spu.getDetailImageUrl())
-                                .originPrice(sku.getOriginPrice())
-                                .discountPrice(sku.getDiscountPrice())
+                                .defaultSku(JSON.toJSONString(sku))
                                 .description(spu.getDescription())
+                                .tags(spu.getTags())
+                                .genericSpec(spu.getGenericSpec())
+                                .specialSpec(spu.getSpecialSpec())
                                 .build()));
     }
 

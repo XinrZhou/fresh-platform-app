@@ -24,11 +24,12 @@ public class SpuDTO {
     private String brandName;
     private String imageUrl;
     private String detailImageUrl;
-    private BigDecimal originPrice;
-    private BigDecimal discountPrice;
+    private String defaultSku;
     // 是否上架 0否 1是
     private Integer saleStatus;
     private String description;
+    // json
+    private String tags;
     // json
     private String genericSpec;
     // json

@@ -32,6 +32,8 @@ public class Spu {
     private Integer saleStatus;
     private String description;
     // json
+    private String tags;
+    // json
     private String genericSpec;
     // json
     private String specialSpec;
