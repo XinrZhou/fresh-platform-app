@@ -23,11 +23,9 @@ public class SpuDTO {
     private Long brandId;
     private String brandName;
     private String imageUrl;
-    private String detailImageUrl;
     private String defaultSku;
     // 是否上架 0否 1是
     private Integer saleStatus;
-    private String description;
     // json
     private String tags;
     // json

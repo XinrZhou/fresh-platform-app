@@ -15,14 +15,21 @@ import java.math.BigDecimal;
 public class SkuDTO {
     @JsonFormat(shape = JsonFormat.Shape.STRING)
     private Long id;
-    @JsonFormat(shape = JsonFormat.Shape.STRING)
-    private Long spuId;
     private String spuName;
     private String name;
     private String imageUrl;
+    private String detailImageUrl;
     private Integer stock;
     private BigDecimal originPrice;
     private BigDecimal discountPrice;
+    private String unit;
+    private String description;
     // 是否有效 0无效 1有效
     private Integer enable;
+    // json
+    private String tags;
+    // json
+    private String genericSpec;
+    // json
+    private String specialSpec;
 }

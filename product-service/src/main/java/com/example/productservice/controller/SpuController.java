@@ -27,11 +27,4 @@ public class SpuController {
         return spuService.listSpus(cid)
                 .map(spuDTOs -> ResultVO.success(Map.of("spus", spuDTOs)));
     }
-
-    @GetMapping("/detail/{sid}")
-    public Mono<ResultVO> getSpu(@PathVariable long sid) {
-        return spuService.getSpu(sid)
-                .flatMap(spuDTO -> skuService.listSkus(sid)
-                        .map(skus ->  ResultVO.success(Map.of("spus", spuDTO, "skus", skus))));
-    }
 }

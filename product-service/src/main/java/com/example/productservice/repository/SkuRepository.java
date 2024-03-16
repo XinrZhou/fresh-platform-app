@@ -12,7 +12,5 @@ public interface SkuRepository extends ReactiveCrudRepository<Sku, Long> {
     @Query("select * from sku order by update_time desc limit :pageSize offset :offset")
     Flux<Sku> findAll(int offset, int pageSize);
 
-    Mono<Sku> findFirstByIsDefault(int isDefault);
-
     Flux<Sku> findBySpuId(long sid);
 }

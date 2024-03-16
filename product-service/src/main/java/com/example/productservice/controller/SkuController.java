@@ -19,9 +19,16 @@ import java.util.Map;
 public class SkuController {
     private final SkuService skuService;
 
-    @GetMapping("/skus/{sid}")
-    public Mono<ResultVO> getSkus(@PathVariable long sid) {
-        return skuService.listSkus(sid)
+    @GetMapping("/skus/{cid}")
+    public Mono<ResultVO> getSkus(@PathVariable long cid) {
+        return skuService.listSkus(cid)
                 .map(skuList-> ResultVO.success(Map.of("skus", skuList)));
+    }
+
+    @GetMapping("/detail/{sid}")
+    public Mono<ResultVO> getSku(@PathVariable long sid) {
+        return skuService.getSku(sid)
+                .flatMap(skuDTO -> skuService.listSku(sid)
+                        .map(skus ->  ResultVO.success(Map.of("skus", skuDTO , "skuList", skus))));
     }
 }
