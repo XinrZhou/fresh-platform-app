@@ -1,6 +1,8 @@
 package com.example.productservice.controller;
 
 import com.example.common.vo.ResultVO;
+import com.example.productservice.dto.SkuDTO;
+import com.example.productservice.po.Sku;
 import com.example.productservice.service.SkuService;
 import io.swagger.annotations.Api;
 import lombok.RequiredArgsConstructor;
@@ -26,9 +28,14 @@ public class SkuController {
     }
 
     @GetMapping("/detail/{sid}")
-    public Mono<ResultVO> getSku(@PathVariable long sid) {
-        return skuService.getSku(sid)
+    public Mono<ResultVO> getSkuDTO(@PathVariable long sid) {
+        return skuService.getSkuDTO(sid)
                 .flatMap(skuDTO -> skuService.listSku(sid)
                         .map(skus ->  ResultVO.success(Map.of("skus", skuDTO , "skuList", skus))));
+    }
+
+    @GetMapping("/sku/{sid}")
+    public Mono<Sku> getSku(@PathVariable long sid) {
+        return skuService.getSku(sid);
     }
 }

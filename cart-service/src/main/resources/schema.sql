@@ -1,5 +1,5 @@
-create database if not exists `user-service`;
-use `user-service`;
+create database if not exists `cart-service`;
+use `cart-service`;
 
 create table if not exists cart
 (

@@ -42,7 +42,7 @@ public class SkuService {
                         .collectList());
     }
 
-    public Mono<SkuDTO> getSku(long sid) {
+    public Mono<SkuDTO> getSkuDTO(long sid) {
         return skuRepository.findById(sid)
                 .flatMap(sku -> spuRepository.findById(sku.getSpuId())
                         .map(spu -> SkuDTO.builder()
@@ -59,6 +59,10 @@ public class SkuService {
                                 .genericSpec(spu.getGenericSpec())
                                 .specialSpec(spu.getSpecialSpec())
                                 .build()));
+    }
+
+    public Mono<Sku> getSku(long sid) {
+        return skuRepository.findById(sid);
     }
 
 }
