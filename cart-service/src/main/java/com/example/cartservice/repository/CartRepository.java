@@ -7,5 +7,6 @@ import reactor.core.publisher.Flux;
 
 @Repository
 public interface CartRepository extends ReactiveCrudRepository<Cart, Long> {
-    Flux<Cart> getCartByUserIdAndType(long uid, int type);
+    Flux<Cart> findByUserIdAndTypeOrderByUpdateTime(long uid, int type);
+
 }

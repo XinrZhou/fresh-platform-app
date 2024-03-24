@@ -25,12 +25,21 @@ public class CartService {
 
     @Transactional
     public Mono<Cart> addCart(Cart cart) {
-        return cartRepository.save(cart);
+        return cartRepository.findByUserIdAndTypeOrderByUpdateTime(cart.getUserId(), Cart.UNSETTLED).collectList()
+                .flatMap(carts -> {
+                    for (Cart c : carts) {
+                        if (c.getSkuId().equals(cart.getSkuId())) {
+                            c.setCount(c.getCount() + 1);
+                            return cartRepository.save(c);
+                        }
+                    }
+                    return cartRepository.save(cart);
+                });
     }
 
     @Transactional
     public Mono<Void> updateStatus(List<Long> cartIds) {
-        String sql = "UPDATE cart SET status = 1 WHERE id IN (:cartIds)";
+        String sql = "UPDATE cart SET type = 1 WHERE id IN (:cartIds)";
 
         return DatabaseClient.create(connectionFactory).sql(sql)
                 .bind("cartIds", cartIds)
@@ -40,7 +49,7 @@ public class CartService {
     }
 
     public Mono<List<CartDTO>> listCarts(long uid) {
-        return cartRepository.getCartByUserIdAndType(uid, Cart.UNSETTLED).collectList()
+        return cartRepository.findByUserIdAndTypeOrderByUpdateTime(uid, Cart.UNSETTLED).collectList()
                 .flatMapMany(Flux::fromIterable)
                 .flatMap(cart -> productClient.getSku(cart.getSkuId())
                         .map(sku -> CartDTO.builder()

@@ -16,6 +16,7 @@ import reactor.core.publisher.Mono;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 
@@ -32,33 +33,44 @@ public class SaleOrderController {
         return saleOrderService.addOrder(saleOrder)
                 .flatMap(savedOrder -> {
                     // Extract cart IDs from the addressSpec JSON string
-                    List<Long> cartIds = extractCartIdsFromAddressSpec(savedOrder.getAddressSpec());
+                    List<Long> cartIds = extractCartIdsFromAddressSpec(savedOrder.getOrderSpec());
                     // Update cart status
                     return cartService.updateStatus(cartIds)
-                            .thenReturn(ResultVO.success(Map.of())); // Return success response
+                            .thenReturn(ResultVO.success(Map.of()));
                 });
     }
 
     // Method to extract cart IDs from addressSpec JSON string
-    private List<Long> extractCartIdsFromAddressSpec(String addressSpec) {
+    private List<Long> extractCartIdsFromAddressSpec(String orderSpec) {
+        if (orderSpec == null || orderSpec.isEmpty()) {
+            return Collections.emptyList();
+        }
+
         ObjectMapper objectMapper = new ObjectMapper();
         List<Long> cartIds = new ArrayList<>();
         try {
-            // 使用 TypeFactory 构建 TypeReference
             TypeReference<List<Map<String, Object>>> typeReference = new TypeReference<>() {};
-            List<Map<String, Object>> addressSpecList = objectMapper.readValue(addressSpec, typeReference);
+            List<Map<String, Object>> orderSpecList = objectMapper.readValue(orderSpec, typeReference);
 
-            // 遍历解析得到的列表，提取购物车ID
-            for (Map<String, Object> addressSpecItem : addressSpecList) {
-                Long cartId = (Long) addressSpecItem.get("cartId");
-                if (cartId != null) {
-                    cartIds.add(cartId);
+            for (Map<String, Object> addressSpecItem : orderSpecList) {
+                Object idObject = addressSpecItem.get("id");
+                if (idObject != null) {
+                    if (idObject instanceof Long) {
+                        cartIds.add((Long) idObject);
+                    } else if (idObject instanceof String) {
+                        try {
+                            cartIds.add(Long.parseLong((String) idObject));
+                        } catch (NumberFormatException e) {
+                            // 处理无法转换为Long的情况，例如记录日志或抛出异常
+                            e.printStackTrace();
+                        }
+                    }
                 }
             }
         } catch (IOException e) {
             e.printStackTrace();
+            // 处理异常，例如记录日志或者抛出自定义异常
         }
         return cartIds;
     }
-
 }
