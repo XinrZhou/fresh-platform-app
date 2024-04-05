@@ -25,6 +25,10 @@ spring:
           uri: lb://product-service
           predicates:
             - Path=/category/**, /attribute/**, /brand/**, /spu/**, /sku/**, /rdc_spu/**
+        - id: page-service
+          uri: lb://page-service
+          predicates:
+            - Path=/page/**
   data:
     redis:
       host: 124.223.175.150

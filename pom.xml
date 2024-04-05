@@ -15,6 +15,7 @@
         <module>product-service</module>
         <module>cart-service</module>
         <module>feign-api</module>
+        <module>page-service</module>
     </modules>
     <groupId>com.example</groupId>
     <artifactId>fresh-platform-app</artifactId>

@@ -21,6 +21,13 @@ import java.util.Map;
 public class SkuController {
     private final SkuService skuService;
 
+    @GetMapping("/skus/{page}/{pageSize}")
+    public Mono<ResultVO> getSkus(@PathVariable int page, @PathVariable int pageSize) {
+        return skuService.listSkus(page, pageSize)
+                .map(skus -> ResultVO.success(Map.of("skus", skus)));
+
+    }
+
     @GetMapping("/skus/{cid}")
     public Mono<ResultVO> getSkus(@PathVariable long cid) {
         return skuService.listSkus(cid)
