@@ -33,6 +33,7 @@ public class CartService {
                             return cartRepository.save(c);
                         }
                     }
+                    cart.setCount(1);
                     return cartRepository.save(cart);
                 });
     }
