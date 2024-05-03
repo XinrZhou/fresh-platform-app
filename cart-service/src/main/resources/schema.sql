@@ -31,7 +31,7 @@ create table if not exists `order_sku`
     id           bigint(19)    not null primary key,
     order_id     bigint(19)    not null,
     sku_id       bigint(19)    not null,
-    ext_spec      json          null,
+    ext_spec     json          not null,
     status       tinyint(1)    not null default 0 comment '商品状态 0未发货 1已发货',
     insert_time  datetime      not null default current_timestamp,
     update_time  datetime      not null default current_timestamp on update current_timestamp

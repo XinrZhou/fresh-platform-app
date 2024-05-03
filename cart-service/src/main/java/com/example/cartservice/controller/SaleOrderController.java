@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
 import java.io.IOException;
@@ -36,9 +37,10 @@ public class SaleOrderController {
                     List<Long> cartIds = extractCartIdsFromAddressSpec(savedOrder.getOrderSpec());
                     // Update cart status
                     return cartService.updateStatus(cartIds)
-                            .thenReturn(ResultVO.success(Map.of()));
+                            .then(Mono.just(ResultVO.success(Map.of())));
                 });
     }
+
 
     // Method to extract cart IDs from addressSpec JSON string
     private List<Long> extractCartIdsFromAddressSpec(String orderSpec) {

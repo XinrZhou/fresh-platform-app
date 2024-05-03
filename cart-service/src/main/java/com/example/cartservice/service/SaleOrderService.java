@@ -24,13 +24,13 @@ import java.util.List;
 @Service
 @Slf4j
 @AllArgsConstructor
+@Transactional
 public class SaleOrderService {
     private final SaleOrderRepository saleOrderRepository;
     private final OrderSkuRepository orderSkuRepository;
     private final ObjectMapper objectMapper;
     private final SnowFlakeGenerator snowFlakeGenerator;
 
-    @Transactional
     public Mono<SaleOrder> addOrder(SaleOrder saleOrder) {
         return saleOrderRepository.save(saleOrder)
                 .flatMap(savedOrder -> {

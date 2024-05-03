@@ -18,12 +18,12 @@ import java.util.List;
 @Service
 @Slf4j
 @RequiredArgsConstructor
+@Transactional
 public class CartService {
     private final CartRepository cartRepository;
     private final ProductClient productClient;
     private final ConnectionFactory connectionFactory;
 
-    @Transactional
     public Mono<Cart> addCart(Cart cart) {
         return cartRepository.findByUserIdAndTypeOrderByUpdateTime(cart.getUserId(), Cart.UNSETTLED).collectList()
                 .flatMap(carts -> {
@@ -38,7 +38,6 @@ public class CartService {
                 });
     }
 
-    @Transactional
     public Mono<Void> updateStatus(List<Long> cartIds) {
         String sql = "UPDATE cart SET type = 1 WHERE id IN (:cartIds)";
 
@@ -46,8 +45,9 @@ public class CartService {
                 .bind("cartIds", cartIds)
                 .fetch()
                 .rowsUpdated()
-                .then();
+                .flatMap(result -> Mono.empty()); // Ensure completion before moving on
     }
+
 
     public Mono<List<CartDTO>> listCarts(long uid) {
         return cartRepository.findByUserIdAndTypeOrderByUpdateTime(uid, Cart.UNSETTLED).collectList()

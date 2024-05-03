@@ -1,0 +1,118 @@
+@startuml
+
+hide empty members
+
+class CartController {
+    - cartService : CartService
+    - decodeUtils : DecodeUtils
+    + postCart(Cart) : Mono<ResultVO>
+    + getCarts(ServerHttpRequest) : Mono<ResultVO>
+}
+
+class SaleOrderController {
+    - saleOrderService : SaleOrderService
+    - cartService : CartService
+    + postOrder(SaleOrder) : Mono<ResultVO>
+    + extractCartIdsFromAddressSpec(String) : List<Long>
+}
+
+class Cart {
+    - id : Long
+    - userId : Long
+    - skuId : Long
+    - count : int
+    - type : int
+    - insertTime : LocalDateTime
+    - updateTime : LocalDateTime
+}
+
+class OrderSku {
+    - id : Long
+    - orderId : Long
+    - skuId : Long
+    - extSpec : String
+    - insertTime : LocalDateTime
+    - updateTime : LocalDateTime
+}
+
+class OrderSpec {
+    - id : Long
+    - userId : Long
+    - skuId : Long
+    - count : int
+    - skuName : String
+    - imageUrl : String
+    - originPrice : double
+    - discountPrice : double
+    - unit : String
+}
+
+class SaleOrder {
+    - id : Long
+    - userId : Long
+    - addressSpec : String
+    - orderSpec : String
+    - type : int
+    - status : int
+    - price : BigDecimal
+    - remark : String
+    - insertTime : LocalDateTime
+    - updateTime : LocalDateTime
+}
+
+class DecodeUtils {
+    - final JwtUtils jwtUtils
+    + getUserId(request: ServerHttpRequest): Long
+    + getRole(request: ServerHttpRequest): Integer
+}
+
+class JwtUtils {
+    - secretkey: String
+    + encode(map: Map<String, Object>): String
+    + decode(token: String): DecodedJWT
+}
+
+interface CartRepository {
+    + findByUserIdAndTypeOrderByUpdateTime(long, int) : Flux<Cart>
+}
+
+interface OrderSkuRepository {
+}
+
+interface SaleOrderRepository {
+}
+
+class CartService {
+    - cartRepository : CartRepository
+    - productClient : ProductClient
+    - connectionFactory : ConnectionFactory
+    + addCart(Cart) : Mono<Cart>
+    + updateStatus(List<Long>) : Mono<Void>
+    + listCarts(long) : Mono<List<CartDTO>>
+}
+
+class SaleOrderService {
+    - saleOrderRepository : SaleOrderRepository
+    - orderSkuRepository : OrderSkuRepository
+    - objectMapper : ObjectMapper
+    + addOrder(SaleOrder) : Mono<SaleOrder>
+    + parseOrderSpecs(String) : List<OrderSpec>
+    + saveOrderSkus(Long, List<OrderSpec>) : Mono<Void>
+    + buildExtSpec(OrderSpec) : String
+}
+
+CartController --> CartService
+CartController --> DecodeUtils
+DecodeUtils --> JwtUtils
+SaleOrderController --> SaleOrderService
+SaleOrderController --> CartService
+CartService --> CartRepository
+CartService --> productClient
+SaleOrderService --> OrderSpec
+SaleOrderService --> SaleOrderRepository
+SaleOrderService --> OrderSkuRepository
+CartRepository <--o Cart
+OrderSkuRepository <--o OrderSku
+SaleOrderRepository <--o SaleOrder
+
+@enduml

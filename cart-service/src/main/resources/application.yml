@@ -12,7 +12,7 @@ spring:
     password: 1157
     pool:
       enabled: true
-      initial-size: 1
+      initial-size: 2
       validation-query: select 1
       max-life-time: 30000
 
